@@ -34,6 +34,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private ImageIcon ii;
     private static BufferedImage bi;
     private static BufferedImage originalImg;
+    private int hueSlider;
   
     /**
      * Creates new form NewJFrame
@@ -51,12 +52,15 @@ public class NewJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        hueSelectFrame = new javax.swing.JFrame();
+        SliderPanel = new javax.swing.JPanel();
+        HueSlider = new javax.swing.JSlider();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         Brightness = new javax.swing.JButton();
         Darken = new javax.swing.JButton();
         Contrast = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        Invert = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         Hue = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
@@ -70,6 +74,42 @@ public class NewJFrame extends javax.swing.JFrame {
         ImagePanelContainer = new javax.swing.JPanel();
         ImagePanel = new javax.swing.JLabel();
         HistogramPanel = new javax.swing.JPanel();
+
+        SliderPanel.setBackground(new java.awt.Color(225, 252, 255));
+
+        HueSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                HueSliderStateChanged(evt);
+            }
+        });
+
+        javax.swing.GroupLayout SliderPanelLayout = new javax.swing.GroupLayout(SliderPanel);
+        SliderPanel.setLayout(SliderPanelLayout);
+        SliderPanelLayout.setHorizontalGroup(
+            SliderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SliderPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(HueSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        SliderPanelLayout.setVerticalGroup(
+            SliderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SliderPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(HueSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(60, 60, 60))
+        );
+
+        javax.swing.GroupLayout hueSelectFrameLayout = new javax.swing.GroupLayout(hueSelectFrame.getContentPane());
+        hueSelectFrame.getContentPane().setLayout(hueSelectFrameLayout);
+        hueSelectFrameLayout.setHorizontalGroup(
+            hueSelectFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(SliderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        hueSelectFrameLayout.setVerticalGroup(
+            hueSelectFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(SliderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -94,14 +134,19 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton6.setText("Invert");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        Invert.setText("Invert");
+        Invert.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                InvertActionPerformed(evt);
             }
         });
 
-        jButton7.setText("jButton1");
+        jButton7.setText("Add Filter");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         Hue.setText("Hue");
         Hue.addActionListener(new java.awt.event.ActionListener() {
@@ -150,7 +195,7 @@ public class NewJFrame extends javax.swing.JFrame {
                     .addComponent(Brightness, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(Darken, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(Contrast, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(Invert, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(Hue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(jButton9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
@@ -176,7 +221,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(Contrast)
                 .addGap(18, 18, 18)
-                .addComponent(jButton6)
+                .addComponent(Invert)
                 .addGap(18, 18, 18)
                 .addComponent(jButton7)
                 .addGap(18, 18, 18)
@@ -381,8 +426,8 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void HueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HueActionPerformed
         // TODO add your handling code here:
-        ii = new ImageIcon(originalImg);
-        ImagePanel.setIcon(ii);
+        hueSelectFrame.setSize(475, 50);
+        hueSelectFrame.setVisible(true);
     }//GEN-LAST:event_HueActionPerformed
 
     private void ResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetActionPerformed
@@ -428,9 +473,48 @@ public class NewJFrame extends javax.swing.JFrame {
     ImagePanel.setIcon(ii);
     }//GEN-LAST:event_ContrastActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void InvertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InvertActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton6ActionPerformed
+        BufferedImage invert = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        for(int i =0; i < bi.getWidth(); i++) {
+            for(int j = 0; j < bi.getHeight(); j++) {
+                Color c = new Color(bi.getRGB(i,j));
+                int r = 255 - c.getRed();
+                int g = 255 - c.getGreen();
+                int b = 255 - c.getBlue();
+
+                Color gColor = new Color(r, g, b, c.getAlpha());
+                invert.setRGB(i, j, gColor.getRGB());
+            }
+        }
+        bi = invert;
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_InvertActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void HueSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_HueSliderStateChanged
+        // TODO add your handling code here:
+        hueSlider = HueSlider.getValue();
+        BufferedImage hue = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        for(int i = 0; i < bi.getWidth(); i++) {
+            for(int j = 0; j < bi.getHeight(); j++) {
+                   int rgb = bi.getRGB(i,j);
+                   int r = (rgb >> 16) & 0xff;
+                   int g = (rgb >> 8) & 0xff;
+                   int b = (rgb) & 0xff;
+                   float HSV[]=new float[3];
+                   Color.RGBtoHSB(r,g,b,HSV);
+                   hue.setRGB(i,j,Color.getHSBColor((hueSlider * 3.6f)/360.0f,HSV[1],HSV[2]).getRGB());
+            }
+        }
+        bi = hue;
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_HueSliderStateChanged
 
     /*
     public void createFrame(String action)
@@ -506,12 +590,15 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JButton Darken;
     private javax.swing.JPanel HistogramPanel;
     private javax.swing.JButton Hue;
+    private javax.swing.JSlider HueSlider;
     private javax.swing.JLabel ImagePanel;
     private javax.swing.JPanel ImagePanelContainer;
+    private javax.swing.JButton Invert;
     private javax.swing.JButton Reset;
+    private javax.swing.JPanel SliderPanel;
     private javax.swing.JButton greyScaleBtn;
+    private javax.swing.JFrame hueSelectFrame;
     private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
