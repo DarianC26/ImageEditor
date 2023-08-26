@@ -737,7 +737,21 @@ public class NewJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_vertFlipActionPerformed
 
     private void saveImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveImageActionPerformed
-
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        
+        fileChooser.showSaveDialog(this);
+        File output = new File(fileChooser.getSelectedFile().toString());
+        
+        try{
+            ImageIO.write(scaleImage(originalWidth, originalHeight, bi), "png", output);
+        }
+        catch(IOException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_saveImageActionPerformed
 
     private void flipHoriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flipHoriActionPerformed
@@ -747,10 +761,10 @@ public class NewJFrame extends javax.swing.JFrame {
         for(int i =0; i < bi.getWidth()/2; i++) {
             for(int j = 0; j < bi.getHeight(); j++) {
                 Color c = new Color(bi.getRGB(i,j));
-                Color opposite = new Color(bi.getRGB(i, width - j));
+                Color opposite = new Color(bi.getRGB(width - i, j));
                 
                 hori.setRGB(i, j, opposite.getRGB());
-                hori.setRGB(i, width - j, c.getRGB());
+                hori.setRGB(width - i, j, c.getRGB());
             }
         }
         bi = hori;
