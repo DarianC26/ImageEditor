@@ -34,7 +34,6 @@ public class NewJFrame extends javax.swing.JFrame {
     private ImageIcon ii;
     private static BufferedImage bi;
     private static BufferedImage originalImg;
-    private int sliderValue;
   
     /**
      * Creates new form NewJFrame
@@ -67,9 +66,10 @@ public class NewJFrame extends javax.swing.JFrame {
         loadImage = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        ImagePanelContainer = new javax.swing.JPanel();
         ImagePanel = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        imageName = new javax.swing.JLabel();
+        HistogramPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -94,7 +94,12 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton6.setText("jButton1");
+        jButton6.setText("Invert");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jButton7.setText("jButton1");
 
@@ -159,7 +164,7 @@ public class NewJFrame extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(loadImage)
                 .addGap(18, 18, 18)
@@ -188,26 +193,37 @@ public class NewJFrame extends javax.swing.JFrame {
         jSeparator1.setBackground(new java.awt.Color(0, 0, 0));
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        ImagePanelContainer.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        imageName.setText("Image Name");
+        javax.swing.GroupLayout ImagePanelContainerLayout = new javax.swing.GroupLayout(ImagePanelContainer);
+        ImagePanelContainer.setLayout(ImagePanelContainerLayout);
+        ImagePanelContainerLayout.setHorizontalGroup(
+            ImagePanelContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(ImagePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
+        );
+        ImagePanelContainerLayout.setVerticalGroup(
+            ImagePanelContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ImagePanelContainerLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(ImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE))
+        );
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(imageName, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                .addContainerGap())
+        jTabbedPane1.addTab("Image", ImagePanelContainer);
+
+        HistogramPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        javax.swing.GroupLayout HistogramPanelLayout = new javax.swing.GroupLayout(HistogramPanel);
+        HistogramPanel.setLayout(HistogramPanelLayout);
+        HistogramPanelLayout.setHorizontalGroup(
+            HistogramPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 646, Short.MAX_VALUE)
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(imageName, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
-                .addContainerGap())
+        HistogramPanelLayout.setVerticalGroup(
+            HistogramPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 485, Short.MAX_VALUE)
         );
+
+        jTabbedPane1.addTab("Histogram", HistogramPanel);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -218,21 +234,17 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 12, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 485, Short.MAX_VALUE))
-                    .addComponent(ImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addComponent(jTabbedPane1)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jTabbedPane1)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -251,9 +263,9 @@ public class NewJFrame extends javax.swing.JFrame {
             .addGap(0, 600, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addGap(0, 33, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addGap(0, 33, Short.MAX_VALUE)))
         );
 
         pack();
@@ -285,17 +297,15 @@ public class NewJFrame extends javax.swing.JFrame {
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
         final File f = chooser.getSelectedFile();
-        String filename = f.getAbsolutePath();
         if (f == null) {
             return;
         }
-        imageName.setText(filename);
 
         SwingWorker sw = new SwingWorker() {
             @Override
             protected Object doInBackground() throws Exception {
                 //simulate large image takes long to load
-                ii = new ImageIcon(scaleImage(658, 555, ImageIO.read(new File(f.getAbsolutePath()))));
+                ii = new ImageIcon(scaleImage(652, 485, ImageIO.read(new File(f.getAbsolutePath()))));
                 return null;
             }
 
@@ -418,6 +428,10 @@ public class NewJFrame extends javax.swing.JFrame {
     ImagePanel.setIcon(ii);
     }//GEN-LAST:event_ContrastActionPerformed
 
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton6ActionPerformed
+
     /*
     public void createFrame(String action)
     {
@@ -490,11 +504,12 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JButton Brightness;
     private javax.swing.JButton Contrast;
     private javax.swing.JButton Darken;
+    private javax.swing.JPanel HistogramPanel;
     private javax.swing.JButton Hue;
     private javax.swing.JLabel ImagePanel;
+    private javax.swing.JPanel ImagePanelContainer;
     private javax.swing.JButton Reset;
     private javax.swing.JButton greyScaleBtn;
-    private javax.swing.JLabel imageName;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
@@ -502,8 +517,8 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton loadImage;
     // End of variables declaration//GEN-END:variables
 }
