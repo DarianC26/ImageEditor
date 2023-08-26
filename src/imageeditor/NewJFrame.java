@@ -13,7 +13,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -38,6 +40,8 @@ public class NewJFrame extends javax.swing.JFrame {
     private static BufferedImage bi;
     private static BufferedImage currentImg;
     private static BufferedImage originalImg;
+    private int originalHeight;
+    private int originalWidth;
     private int hueSlider;
     private Color colorSelected;
   
@@ -64,6 +68,7 @@ public class NewJFrame extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         HueSlider = new javax.swing.JSlider();
         saveHue = new javax.swing.JButton();
+        jFileChooser1 = new javax.swing.JFileChooser();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         Brightness = new javax.swing.JButton();
@@ -72,17 +77,20 @@ public class NewJFrame extends javax.swing.JFrame {
         Invert = new javax.swing.JButton();
         colorFilter = new javax.swing.JButton();
         Hue = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
+        sharpen = new javax.swing.JButton();
+        vertFlip = new javax.swing.JButton();
         Reset = new javax.swing.JButton();
         greyScaleBtn = new javax.swing.JButton();
         loadImage = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        flipHori = new javax.swing.JButton();
+        saveImage = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         ImagePanelContainer = new javax.swing.JPanel();
         ImagePanel = new javax.swing.JLabel();
         HistogramPanel = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
 
         colorFilterFrame.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -203,7 +211,7 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        colorFilter.setText("Add Filter");
+        colorFilter.setText("Color Filter");
         colorFilter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 colorFilterActionPerformed(evt);
@@ -217,9 +225,19 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton9.setText("jButton1");
+        sharpen.setText("Sharpen");
+        sharpen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sharpenActionPerformed(evt);
+            }
+        });
 
-        jButton10.setText("jButton1");
+        vertFlip.setText("Flip Vertical");
+        vertFlip.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                vertFlipActionPerformed(evt);
+            }
+        });
 
         Reset.setText("Reset");
         Reset.addActionListener(new java.awt.event.ActionListener() {
@@ -242,36 +260,52 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Microsoft Sans Serif", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Myanmar MN", 0, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Image Editor");
+
+        flipHori.setText("Flip Horizontal");
+        flipHori.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                flipHoriActionPerformed(evt);
+            }
+        });
+
+        saveImage.setText("Save Image");
+        saveImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveImageActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(greyScaleBtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Brightness, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(Darken, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(Contrast, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(Invert, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(colorFilter, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(Hue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(jButton9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(jButton10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(Reset, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(loadImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(greyScaleBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Brightness, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(Darken, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(Contrast, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(Invert, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(colorFilter, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(Hue, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(sharpen, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(Reset, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(loadImage, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(vertFlip, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(flipHori, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(saveImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(loadImage)
                 .addGap(18, 18, 18)
@@ -289,12 +323,16 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(Hue)
                 .addGap(18, 18, 18)
-                .addComponent(jButton9)
+                .addComponent(sharpen)
                 .addGap(18, 18, 18)
-                .addComponent(jButton10)
+                .addComponent(vertFlip)
+                .addGap(18, 18, 18)
+                .addComponent(flipHori)
+                .addGap(18, 18, 18)
+                .addComponent(saveImage)
                 .addGap(18, 18, 18)
                 .addComponent(Reset)
-                .addGap(17, 17, 17))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jSeparator1.setBackground(new java.awt.Color(0, 0, 0));
@@ -306,13 +344,11 @@ public class NewJFrame extends javax.swing.JFrame {
         ImagePanelContainer.setLayout(ImagePanelContainerLayout);
         ImagePanelContainerLayout.setHorizontalGroup(
             ImagePanelContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ImagePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
+            .addComponent(ImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
         );
         ImagePanelContainerLayout.setVerticalGroup(
             ImagePanelContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ImagePanelContainerLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE))
+            .addComponent(ImagePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Image", ImagePanelContainer);
@@ -327,7 +363,7 @@ public class NewJFrame extends javax.swing.JFrame {
         );
         HistogramPanelLayout.setVerticalGroup(
             HistogramPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 485, Short.MAX_VALUE)
+            .addGap(0, 576, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("Histogram", HistogramPanel);
@@ -347,238 +383,49 @@ public class NewJFrame extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTabbedPane1)
                 .addContainerGap())
+            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+        );
+
+        jPanel4.setBackground(new java.awt.Color(0, 51, 102));
+        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 51, 153)));
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 30, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 844, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 7, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8))
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 33, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 33, Short.MAX_VALUE)))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void greyScaleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_greyScaleBtnActionPerformed
-        // TODO add your handling code here:
-        BufferedImage greyscaleImage = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        for(int i =0; i < bi.getWidth(); i++) {
-            for(int j = 0; j < bi.getHeight(); j++) {
-                Color c = new Color(bi.getRGB(i,j));
-                int r = c.getRed();
-                int g = c.getGreen();
-                int b = c.getBlue();
-                int a = c.getAlpha();
-                
-                int gr = (r + g + b) / 3;
-                Color gColor = new Color(gr, gr, gr, a);
-                greyscaleImage.setRGB(i, j, gColor.getRGB());
-            }
-        }
-        bi = greyscaleImage;
-        ii = new ImageIcon(bi);
-        ImagePanel.setIcon(ii);
-    }//GEN-LAST:event_greyScaleBtnActionPerformed
-
-    private void loadImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadImageActionPerformed
-        // TODO add your handling code here:
-        JFileChooser chooser = new JFileChooser();
-        chooser.setPreferredSize(new Dimension(600, 400));
-        chooser.showOpenDialog(null);
-        final File f = chooser.getSelectedFile();
-        if (f == null) {
-            return;
-        }
-
-        SwingWorker sw = new SwingWorker() {
-            @Override
-            protected Object doInBackground() throws Exception {
-                //simulate large image takes long to load
-                ii = new ImageIcon(scaleImage(652, 485, ImageIO.read(new File(f.getAbsolutePath()))));
-                return null;
-            }
-
-            @Override
-            protected void done() { 
-                super.done();
-                ImagePanel.setIcon(ii);
-            }
-        };
-        sw.execute();
-
-    }//GEN-LAST:event_loadImageActionPerformed
-
-    private void BrightnessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BrightnessActionPerformed
-        // TODO add your handling code here:
-        BufferedImage brightness = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        for(int i =0; i < bi.getWidth(); i++) {
-            for(int j = 0; j < bi.getHeight(); j++) {
-                Color c = new Color(bi.getRGB(i,j));
-                int r = c.getRed() + 10;
-                int g = c.getGreen() + 10;
-                int b = c.getBlue() + 10;
-                int a = c.getAlpha();
-
-                if(r > 255) {
-                    r = 255;
-                }
-                if(g > 255) {
-                    g = 255;
-                }
-                if(b > 255) {
-                    b = 255;
-                }
-
-                Color gColor = new Color(r, g, b, a);
-                brightness.setRGB(i, j, gColor.getRGB());
-            }
-        }
-        bi = brightness;
-        ii = new ImageIcon(bi);
-        ImagePanel.setIcon(ii);
-    }//GEN-LAST:event_BrightnessActionPerformed
  
-    private void DarkenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DarkenActionPerformed
-        // TODO add your handling code here:
-        BufferedImage darken = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        for(int i =0; i < bi.getWidth(); i++) {
-            for(int j = 0; j < bi.getHeight(); j++) {
-                Color c = new Color(bi.getRGB(i,j));
-                int r = c.getRed() - 10;
-                int g = c.getGreen() - 10;
-                int b = c.getBlue() - 10;
-                int a = c.getAlpha();
-
-                if(r < 0) {
-                    r = 0;
-                }
-                if(g < 0) {
-                    g = 0;
-                }
-                if(b < 0) {
-                    b = 0;
-                }
-
-                Color gColor = new Color(r, g, b, a);
-                darken.setRGB(i, j, gColor.getRGB());
-            }
-        }
-        bi = darken;
-        ii = new ImageIcon(bi);
-        ImagePanel.setIcon(ii);
-    }//GEN-LAST:event_DarkenActionPerformed
-
-    private void HueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HueActionPerformed
-        // TODO add your handling code here:
-        hueSelectFrame.setSize(400, 100);
-        hueSelectFrame.setVisible(true);
-    }//GEN-LAST:event_HueActionPerformed
-
-    private void ResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetActionPerformed
-        // TODO add your handling code here:
-        bi = originalImg;
-        ii = new ImageIcon(originalImg);
-        ImagePanel.setIcon(ii);
-    }//GEN-LAST:event_ResetActionPerformed
-
-    private void ContrastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ContrastActionPerformed
-        // TODO add your handling code here:
-    BufferedImage imageAltered = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_RGB);
-    int brightness = (int)(Math.random()*301) - 250; //values from 150 to 200
-    double contrast = 1.5 + (5.0 - 1.5) * Math.random(); //values from 1.5 to 5.0
-
-    for(int i = 0; i < bi.getWidth(); i++) {
-        for(int j = 0; j < bi.getHeight(); j++) {
-            Color c = new Color(bi.getRGB(i, j));
-            int red = (int) contrast * c.getRed() + brightness;
-            int green = (int) contrast * c.getGreen() + brightness;
-            int blue = (int) contrast * c.getBlue() + brightness;
-
-            if(red > 255) { // the values of the color components must be between 0-255
-                red = 255;
-            } else if(red < 0) {
-                red = 0;
-            }
-            if(green > 255) {
-                green = 255;
-            } else if(green < 0) {
-                green = 0;
-            }
-            if(blue > 255) {
-                blue = 255;
-            } else if(blue < 0) {
-                blue = 0;
-            }
-            imageAltered.setRGB(i, j, new Color(red, green, blue).getRGB());
-        }
-    }
-    bi = imageAltered;
-    ii = new ImageIcon(bi);
-    ImagePanel.setIcon(ii);
-    }//GEN-LAST:event_ContrastActionPerformed
-
-    private void InvertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InvertActionPerformed
-        // TODO add your handling code here:
-        BufferedImage invert = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        for(int i =0; i < bi.getWidth(); i++) {
-            for(int j = 0; j < bi.getHeight(); j++) {
-                Color c = new Color(bi.getRGB(i,j));
-                int r = 255 - c.getRed();
-                int g = 255 - c.getGreen();
-                int b = 255 - c.getBlue();
-
-                Color gColor = new Color(r, g, b, c.getAlpha());
-                invert.setRGB(i, j, gColor.getRGB());
-            }
-        }
-        bi = invert;
-        ii = new ImageIcon(bi);
-        ImagePanel.setIcon(ii);
-    }//GEN-LAST:event_InvertActionPerformed
-
-    private void colorFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorFilterActionPerformed
-        // TODO add your handling code here:
-        //660 355
-        BufferedImage filter = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        ColorSelectionModel model = colorSelector.getSelectionModel();
-        ChangeListener changeListener = new ChangeListener() {
-            public void stateChanged(ChangeEvent changeEvent) {
-                colorSelected = colorSelector.getColor();
-                for(int i = 0; i < bi.getWidth(); i++) {
-                    for(int j = 0; j < bi.getHeight(); j++) {
-                        int pixel = bi.getRGB(i, j) & colorSelected.getRGB();
-                        filter.setRGB(i, j, pixel);
-                    }
-                }
-                currentImg = filter;
-                ii = new ImageIcon(currentImg);
-                ImagePanel.setIcon(ii);
-            }
-        };
-        model.addChangeListener(changeListener);
-        colorFilterFrame.setSize(660, 355);
-        colorFilterFrame.setVisible(true);
-    }//GEN-LAST:event_colorFilterActionPerformed
-
     private void saveFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveFilterActionPerformed
         // TODO add your handling code here:
         bi = currentImg;
@@ -613,6 +460,249 @@ public class NewJFrame extends javax.swing.JFrame {
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_HueSliderStateChanged
 
+    private void loadImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadImageActionPerformed
+        // TODO add your handling code here:
+        JFileChooser chooser = new JFileChooser();
+        chooser.setPreferredSize(new Dimension(600, 400));
+        chooser.showOpenDialog(null);
+        final File f = chooser.getSelectedFile();
+        if (f == null) {
+            return;
+        }
+
+        SwingWorker sw = new SwingWorker() {
+            @Override
+            protected Object doInBackground() throws Exception {
+                originalImg = ImageIO.read(new File(f.getAbsolutePath()));
+                originalHeight = originalImg.getHeight();
+                originalWidth = originalImg.getWidth();
+                //simulate large image takes long to load
+                ii = new ImageIcon(scaleImage(652, 600, ImageIO.read(new File(f.getAbsolutePath()))));
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                super.done();
+                ImagePanel.setIcon(ii);
+            }
+        };
+        sw.execute();
+    }//GEN-LAST:event_loadImageActionPerformed
+
+    private void greyScaleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_greyScaleBtnActionPerformed
+        // TODO add your handling code here:
+        BufferedImage greyscaleImage = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        for(int i =0; i < bi.getWidth(); i++) {
+            for(int j = 0; j < bi.getHeight(); j++) {
+                Color c = new Color(bi.getRGB(i,j));
+                int r = c.getRed();
+                int g = c.getGreen();
+                int b = c.getBlue();
+                int a = c.getAlpha();
+
+                int gr = (r + g + b) / 3;
+                Color gColor = new Color(gr, gr, gr, a);
+                greyscaleImage.setRGB(i, j, gColor.getRGB());
+            }
+        }
+        bi = greyscaleImage;
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_greyScaleBtnActionPerformed
+
+    private void ResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetActionPerformed
+        // TODO add your handling code here:
+        bi = originalImg;
+        try {
+            ii = new ImageIcon(scaleImage(652, 600, bi));
+        } catch (Exception ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_ResetActionPerformed
+
+    private void HueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HueActionPerformed
+        // TODO add your handling code here:
+        hueSelectFrame.setSize(400, 125);
+        hueSelectFrame.setVisible(true);
+    }//GEN-LAST:event_HueActionPerformed
+
+    private void colorFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorFilterActionPerformed
+        // TODO add your handling code here:
+        //660 355
+        BufferedImage filter = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        ColorSelectionModel model = colorSelector.getSelectionModel();
+        ChangeListener changeListener = new ChangeListener() {
+            public void stateChanged(ChangeEvent changeEvent) {
+                colorSelected = colorSelector.getColor();
+                for(int i = 0; i < bi.getWidth(); i++) {
+                    for(int j = 0; j < bi.getHeight(); j++) {
+                        int pixel = bi.getRGB(i, j) & colorSelected.getRGB();
+                        filter.setRGB(i, j, pixel);
+                    }
+                }
+                currentImg = filter;
+                ii = new ImageIcon(currentImg);
+                ImagePanel.setIcon(ii);
+            }
+        };
+        model.addChangeListener(changeListener);
+        colorFilterFrame.setSize(660, 500);
+        colorFilterFrame.setVisible(true);
+    }//GEN-LAST:event_colorFilterActionPerformed
+
+    private void InvertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InvertActionPerformed
+        // TODO add your handling code here:
+        BufferedImage invert = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        for(int i =0; i < bi.getWidth(); i++) {
+            for(int j = 0; j < bi.getHeight(); j++) {
+                Color c = new Color(bi.getRGB(i,j));
+                int r = 255 - c.getRed();
+                int g = 255 - c.getGreen();
+                int b = 255 - c.getBlue();
+
+                Color gColor = new Color(r, g, b, c.getAlpha());
+                invert.setRGB(i, j, gColor.getRGB());
+            }
+        }
+        bi = invert;
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_InvertActionPerformed
+
+    private void ContrastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ContrastActionPerformed
+        // TODO add your handling code here:
+        BufferedImage imageAltered = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_RGB);
+        int brightness = (int)(Math.random()*301) - 250; //values from 150 to 200
+        double contrast = 1.5 + (5.0 - 1.5) * Math.random(); //values from 1.5 to 5.0
+
+        for(int i = 0; i < bi.getWidth(); i++) {
+            for(int j = 0; j < bi.getHeight(); j++) {
+                Color c = new Color(bi.getRGB(i, j));
+                int r = (int) contrast * c.getRed() + brightness;
+                int g = (int) contrast * c.getGreen() + brightness;
+                int b = (int) contrast * c.getBlue() + brightness;
+
+                if(r > 255) { // the values of the color components must be between 0-255
+                    r = 255;
+                } else if(r < 0) {
+                    r = 0;
+                }
+                if(g > 255) {
+                    g = 255;
+                } else if(g < 0) {
+                    g = 0;
+                }
+                if(b > 255) {
+                    b = 255;
+                } else if(b < 0) {
+                    b = 0;
+                }
+                imageAltered.setRGB(i, j, new Color(r, g, b).getRGB());
+            }
+        }
+        bi = imageAltered;
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_ContrastActionPerformed
+
+    private void DarkenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DarkenActionPerformed
+        // TODO add your handling code here:
+        BufferedImage darken = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        for(int i =0; i < bi.getWidth(); i++) {
+            for(int j = 0; j < bi.getHeight(); j++) {
+                Color c = new Color(bi.getRGB(i,j));
+                int r = c.getRed() - 10;
+                int g = c.getGreen() - 10;
+                int b = c.getBlue() - 10;
+                int a = c.getAlpha();
+
+                if(r < 0) {
+                    r = 0;
+                }
+                if(g < 0) {
+                    g = 0;
+                }
+                if(b < 0) {
+                    b = 0;
+                }
+
+                Color gColor = new Color(r, g, b, a);
+                darken.setRGB(i, j, gColor.getRGB());
+            }
+        }
+        bi = darken;
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_DarkenActionPerformed
+
+    private void BrightnessActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BrightnessActionPerformed
+        // TODO add your handling code here:
+        BufferedImage brightness = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        for(int i =0; i < bi.getWidth(); i++) {
+            for(int j = 0; j < bi.getHeight(); j++) {
+                Color c = new Color(bi.getRGB(i,j));
+                int r = c.getRed() + 10;
+                int g = c.getGreen() + 10;
+                int b = c.getBlue() + 10;
+                int a = c.getAlpha();
+
+                if(r > 255) {
+                    r = 255;
+                }
+                if(g > 255) {
+                    g = 255;
+                }
+                if(b > 255) {
+                    b = 255;
+                }
+
+                Color gColor = new Color(r, g, b, a);
+                brightness.setRGB(i, j, gColor.getRGB());
+            }
+        }
+        bi = brightness;
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_BrightnessActionPerformed
+
+    private void sharpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sharpenActionPerformed
+        // TODO add your handling code here:
+        BufferedImage sharpen = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        for(int i = 1; i < bi.getWidth(); i++) {
+            for(int j = 1; j < bi.getHeight(); j++) {
+                Color c = new Color(bi.getRGB(i,j));
+                Color prevC = new Color(bi.getRGB(i - 1,j - 1));
+                int r = (int) (c.getRed() + 0.5 * (c.getRed() - prevC.getRed()));
+                int g = (int) (c.getGreen() + 0.5 * (c.getGreen() - prevC.getBlue()));
+                int b = (int) (c.getBlue() + 0.5 * (c.getBlue() - prevC.getBlue()));
+
+                if(r > 255) {
+                    r = 255;
+                } else if(r < 0) {
+                    r = 0;
+                }
+                if(g > 255) {
+                    g = 255;
+                } else if(g < 0) {
+                    g = 0;
+                }
+                if(b > 255) {
+                    b = 255;
+                } else if(b < 0) {
+                    b = 0;
+                }
+
+                Color gColor = new Color(r, g, b, c.getAlpha());
+                sharpen.setRGB(i, j, gColor.getRGB());
+            }
+        }
+        bi = sharpen;
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_sharpenActionPerformed
+
     private void saveHueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveHueActionPerformed
         // TODO add your handling code here:
         bi = currentImg;
@@ -622,10 +712,51 @@ public class NewJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_saveHueActionPerformed
 
     private void hueSelectFrameWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_hueSelectFrameWindowClosing
+        // TODO add your handling code here:                                               
         // TODO add your handling code here:
         ii = new ImageIcon(bi);
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_hueSelectFrameWindowClosing
+
+    private void vertFlipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vertFlipActionPerformed
+        // TODO add your handling code here:
+        BufferedImage vert = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        int height = bi.getHeight() - 1;
+        for(int i =0; i < bi.getWidth(); i++) {
+            for(int j = 0; j < bi.getHeight()/2; j++) {
+                Color c = new Color(bi.getRGB(i,j));
+                Color opposite = new Color(bi.getRGB(i, height - j));
+                
+                vert.setRGB(i, j, opposite.getRGB());
+                vert.setRGB(i, height - j, c.getRGB());
+            }
+        }
+        bi = vert;
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_vertFlipActionPerformed
+
+    private void saveImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveImageActionPerformed
+
+    }//GEN-LAST:event_saveImageActionPerformed
+
+    private void flipHoriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flipHoriActionPerformed
+        // TODO add your handling code here:
+        BufferedImage hori = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        int width = bi.getWidth() - 1;
+        for(int i =0; i < bi.getWidth()/2; i++) {
+            for(int j = 0; j < bi.getHeight(); j++) {
+                Color c = new Color(bi.getRGB(i,j));
+                Color opposite = new Color(bi.getRGB(i, width - j));
+                
+                hori.setRGB(i, j, opposite.getRGB());
+                hori.setRGB(i, width - j, c.getRGB());
+            }
+        }
+        bi = hori;
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_flipHoriActionPerformed
 
     /*
     public void createFrame(String action)
@@ -649,7 +780,6 @@ public class NewJFrame extends javax.swing.JFrame {
     
     public static BufferedImage scaleImage(int w, int h, BufferedImage img) throws Exception {
         bi = new BufferedImage(w, h, BufferedImage.TRANSLUCENT);
-        originalImg = bi;
         Graphics2D g2d = (Graphics2D) bi.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
@@ -708,18 +838,22 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JButton colorFilter;
     private javax.swing.JFrame colorFilterFrame;
     private javax.swing.JColorChooser colorSelector;
+    private javax.swing.JButton flipHori;
     private javax.swing.JButton greyScaleBtn;
     private javax.swing.JFrame hueSelectFrame;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton9;
+    private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton loadImage;
     private javax.swing.JButton saveFilter;
     private javax.swing.JButton saveHue;
+    private javax.swing.JButton saveImage;
+    private javax.swing.JButton sharpen;
+    private javax.swing.JButton vertFlip;
     // End of variables declaration//GEN-END:variables
 }
