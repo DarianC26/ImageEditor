@@ -23,6 +23,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import javax.swing.*;
+import javax.swing.colorchooser.ColorSelectionModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultCaret;
 
 /**
@@ -33,8 +36,10 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private ImageIcon ii;
     private static BufferedImage bi;
+    private static BufferedImage currentImg;
     private static BufferedImage originalImg;
     private int hueSlider;
+    private Color colorSelected;
   
     /**
      * Creates new form NewJFrame
@@ -52,16 +57,20 @@ public class NewJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        colorFilterFrame = new javax.swing.JFrame();
+        colorSelector = new javax.swing.JColorChooser();
+        saveFilter = new javax.swing.JButton();
         hueSelectFrame = new javax.swing.JFrame();
-        SliderPanel = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
         HueSlider = new javax.swing.JSlider();
+        saveHue = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         Brightness = new javax.swing.JButton();
         Darken = new javax.swing.JButton();
         Contrast = new javax.swing.JButton();
         Invert = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        colorFilter = new javax.swing.JButton();
         Hue = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
@@ -75,7 +84,47 @@ public class NewJFrame extends javax.swing.JFrame {
         ImagePanel = new javax.swing.JLabel();
         HistogramPanel = new javax.swing.JPanel();
 
-        SliderPanel.setBackground(new java.awt.Color(225, 252, 255));
+        colorFilterFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                colorFilterFrameWindowClosing(evt);
+            }
+        });
+
+        saveFilter.setText("Save");
+        saveFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveFilterActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout colorFilterFrameLayout = new javax.swing.GroupLayout(colorFilterFrame.getContentPane());
+        colorFilterFrame.getContentPane().setLayout(colorFilterFrameLayout);
+        colorFilterFrameLayout.setHorizontalGroup(
+            colorFilterFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(colorFilterFrameLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(colorSelector, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, colorFilterFrameLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(saveFilter)
+                .addContainerGap())
+        );
+        colorFilterFrameLayout.setVerticalGroup(
+            colorFilterFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(colorFilterFrameLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(colorSelector, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(saveFilter)
+                .addContainerGap(12, Short.MAX_VALUE))
+        );
+
+        hueSelectFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                hueSelectFrameWindowClosing(evt);
+            }
+        });
 
         HueSlider.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -83,32 +132,45 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout SliderPanelLayout = new javax.swing.GroupLayout(SliderPanel);
-        SliderPanel.setLayout(SliderPanelLayout);
-        SliderPanelLayout.setHorizontalGroup(
-            SliderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SliderPanelLayout.createSequentialGroup()
+        saveHue.setText("Save");
+        saveHue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveHueActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(HueSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(HueSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(saveHue)))
                 .addContainerGap())
         );
-        SliderPanelLayout.setVerticalGroup(
-            SliderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SliderPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
                 .addComponent(HueSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(60, 60, 60))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addComponent(saveHue)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout hueSelectFrameLayout = new javax.swing.GroupLayout(hueSelectFrame.getContentPane());
         hueSelectFrame.getContentPane().setLayout(hueSelectFrameLayout);
         hueSelectFrameLayout.setHorizontalGroup(
             hueSelectFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(SliderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         hueSelectFrameLayout.setVerticalGroup(
             hueSelectFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(SliderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -141,10 +203,10 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
 
-        jButton7.setText("Add Filter");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        colorFilter.setText("Add Filter");
+        colorFilter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                colorFilterActionPerformed(evt);
             }
         });
 
@@ -196,7 +258,7 @@ public class NewJFrame extends javax.swing.JFrame {
                     .addComponent(Darken, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(Contrast, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(Invert, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(colorFilter, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(Hue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(jButton9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(jButton10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
@@ -223,7 +285,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(Invert)
                 .addGap(18, 18, 18)
-                .addComponent(jButton7)
+                .addComponent(colorFilter)
                 .addGap(18, 18, 18)
                 .addComponent(Hue)
                 .addGap(18, 18, 18)
@@ -340,6 +402,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private void loadImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadImageActionPerformed
         // TODO add your handling code here:
         JFileChooser chooser = new JFileChooser();
+        chooser.setPreferredSize(new Dimension(600, 400));
         chooser.showOpenDialog(null);
         final File f = chooser.getSelectedFile();
         if (f == null) {
@@ -426,7 +489,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void HueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HueActionPerformed
         // TODO add your handling code here:
-        hueSelectFrame.setSize(475, 50);
+        hueSelectFrame.setSize(400, 100);
         hueSelectFrame.setVisible(true);
     }//GEN-LAST:event_HueActionPerformed
 
@@ -492,9 +555,43 @@ public class NewJFrame extends javax.swing.JFrame {
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_InvertActionPerformed
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    private void colorFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorFilterActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
+        //660 355
+        BufferedImage filter = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        ColorSelectionModel model = colorSelector.getSelectionModel();
+        ChangeListener changeListener = new ChangeListener() {
+            public void stateChanged(ChangeEvent changeEvent) {
+                colorSelected = colorSelector.getColor();
+                for(int i = 0; i < bi.getWidth(); i++) {
+                    for(int j = 0; j < bi.getHeight(); j++) {
+                        int pixel = bi.getRGB(i, j) & colorSelected.getRGB();
+                        filter.setRGB(i, j, pixel);
+                    }
+                }
+                currentImg = filter;
+                ii = new ImageIcon(currentImg);
+                ImagePanel.setIcon(ii);
+            }
+        };
+        model.addChangeListener(changeListener);
+        colorFilterFrame.setSize(660, 355);
+        colorFilterFrame.setVisible(true);
+    }//GEN-LAST:event_colorFilterActionPerformed
+
+    private void saveFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveFilterActionPerformed
+        // TODO add your handling code here:
+        bi = currentImg;
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+        colorFilterFrame.dispose();
+    }//GEN-LAST:event_saveFilterActionPerformed
+
+    private void colorFilterFrameWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_colorFilterFrameWindowClosing
+        // TODO add your handling code here:
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_colorFilterFrameWindowClosing
 
     private void HueSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_HueSliderStateChanged
         // TODO add your handling code here:
@@ -502,19 +599,33 @@ public class NewJFrame extends javax.swing.JFrame {
         BufferedImage hue = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for(int i = 0; i < bi.getWidth(); i++) {
             for(int j = 0; j < bi.getHeight(); j++) {
-                   int rgb = bi.getRGB(i,j);
-                   int r = (rgb >> 16) & 0xff;
-                   int g = (rgb >> 8) & 0xff;
-                   int b = (rgb) & 0xff;
-                   float HSV[]=new float[3];
-                   Color.RGBtoHSB(r,g,b,HSV);
-                   hue.setRGB(i,j,Color.getHSBColor((hueSlider * 3.6f)/360.0f,HSV[1],HSV[2]).getRGB());
+                int rgb = bi.getRGB(i,j);
+                int r = (rgb >> 16) & 0xff;
+                int g = (rgb >> 8) & 0xff;
+                int b = (rgb) & 0xff;
+                float HSV[]=new float[3];
+                Color.RGBtoHSB(r,g,b,HSV);
+                hue.setRGB(i,j,Color.getHSBColor((hueSlider * 3.6f)/360.0f,HSV[1],HSV[2]).getRGB());
             }
         }
-        bi = hue;
-        ii = new ImageIcon(bi);
+        currentImg = hue;
+        ii = new ImageIcon(currentImg);
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_HueSliderStateChanged
+
+    private void saveHueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveHueActionPerformed
+        // TODO add your handling code here:
+        bi = currentImg;
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+        hueSelectFrame.dispose();
+    }//GEN-LAST:event_saveHueActionPerformed
+
+    private void hueSelectFrameWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_hueSelectFrameWindowClosing
+        // TODO add your handling code here:
+        ii = new ImageIcon(bi);
+        ImagePanel.setIcon(ii);
+    }//GEN-LAST:event_hueSelectFrameWindowClosing
 
     /*
     public void createFrame(String action)
@@ -573,7 +684,6 @@ public class NewJFrame extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -595,17 +705,21 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel ImagePanelContainer;
     private javax.swing.JButton Invert;
     private javax.swing.JButton Reset;
-    private javax.swing.JPanel SliderPanel;
+    private javax.swing.JButton colorFilter;
+    private javax.swing.JFrame colorFilterFrame;
+    private javax.swing.JColorChooser colorSelector;
     private javax.swing.JButton greyScaleBtn;
     private javax.swing.JFrame hueSelectFrame;
     private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JButton loadImage;
+    private javax.swing.JButton saveFilter;
+    private javax.swing.JButton saveHue;
     // End of variables declaration//GEN-END:variables
 }
