@@ -38,6 +38,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private ImageIcon ii;
     private static BufferedImage bi;
+    private static BufferedImage previewImg;
     private static BufferedImage currentImg;
     private static BufferedImage originalImg;
     private int originalHeight;
@@ -90,6 +91,8 @@ public class NewJFrame extends javax.swing.JFrame {
         ImagePanelContainer = new javax.swing.JPanel();
         ImagePanel = new javax.swing.JLabel();
         HistogramPanel = new javax.swing.JPanel();
+        generateHistogram = new javax.swing.JButton();
+        histopanel = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
 
         colorFilterFrame.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -355,15 +358,43 @@ public class NewJFrame extends javax.swing.JFrame {
 
         HistogramPanel.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        generateHistogram.setText("Generate Histogram");
+        generateHistogram.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generateHistogramActionPerformed(evt);
+            }
+        });
+
+        histopanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        javax.swing.GroupLayout histopanelLayout = new javax.swing.GroupLayout(histopanel);
+        histopanel.setLayout(histopanelLayout);
+        histopanelLayout.setHorizontalGroup(
+            histopanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        histopanelLayout.setVerticalGroup(
+            histopanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 541, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout HistogramPanelLayout = new javax.swing.GroupLayout(HistogramPanel);
         HistogramPanel.setLayout(HistogramPanelLayout);
         HistogramPanelLayout.setHorizontalGroup(
             HistogramPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 646, Short.MAX_VALUE)
+            .addGroup(HistogramPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(generateHistogram)
+                .addContainerGap(494, Short.MAX_VALUE))
+            .addComponent(histopanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         HistogramPanelLayout.setVerticalGroup(
             HistogramPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 576, Short.MAX_VALUE)
+            .addGroup(HistogramPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(generateHistogram)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(histopanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Histogram", HistogramPanel);
@@ -476,6 +507,7 @@ public class NewJFrame extends javax.swing.JFrame {
                 originalImg = ImageIO.read(new File(f.getAbsolutePath()));
                 originalHeight = originalImg.getHeight();
                 originalWidth = originalImg.getWidth();
+                bi = originalImg;
                 //simulate large image takes long to load
                 ii = new ImageIcon(scaleImage(652, 600, ImageIO.read(new File(f.getAbsolutePath()))));
                 return null;
@@ -507,7 +539,11 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         }
         bi = greyscaleImage;
-        ii = new ImageIcon(bi);
+        try {
+            ii = new ImageIcon(scaleImage(652, 600, bi));
+        } catch (Exception ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_greyScaleBtnActionPerformed
 
@@ -533,19 +569,21 @@ public class NewJFrame extends javax.swing.JFrame {
         //660 355
         BufferedImage filter = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
         ColorSelectionModel model = colorSelector.getSelectionModel();
-        ChangeListener changeListener = new ChangeListener() {
-            public void stateChanged(ChangeEvent changeEvent) {
-                colorSelected = colorSelector.getColor();
-                for(int i = 0; i < bi.getWidth(); i++) {
-                    for(int j = 0; j < bi.getHeight(); j++) {
-                        int pixel = bi.getRGB(i, j) & colorSelected.getRGB();
-                        filter.setRGB(i, j, pixel);
-                    }
+        ChangeListener changeListener = (ChangeEvent changeEvent) -> {
+            colorSelected = colorSelector.getColor();
+            for(int i = 0; i < bi.getWidth(); i++) {
+                for(int j = 0; j < bi.getHeight(); j++) {
+                    int pixel = bi.getRGB(i, j) & colorSelected.getRGB();
+                    filter.setRGB(i, j, pixel);
                 }
-                currentImg = filter;
-                ii = new ImageIcon(currentImg);
-                ImagePanel.setIcon(ii);
             }
+            currentImg = filter;
+            try {
+            ii = new ImageIcon(scaleImage(652, 600, bi));
+            } catch (Exception ex) {
+                Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            ImagePanel.setIcon(ii);
         };
         model.addChangeListener(changeListener);
         colorFilterFrame.setSize(660, 500);
@@ -567,7 +605,11 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         }
         bi = invert;
-        ii = new ImageIcon(bi);
+        try {
+            ii = new ImageIcon(scaleImage(652, 600, bi));
+        } catch (Exception ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_InvertActionPerformed
 
@@ -603,7 +645,11 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         }
         bi = imageAltered;
-        ii = new ImageIcon(bi);
+        try {
+            ii = new ImageIcon(scaleImage(652, 600, bi));
+        } catch (Exception ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_ContrastActionPerformed
 
@@ -633,7 +679,11 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         }
         bi = darken;
-        ii = new ImageIcon(bi);
+        try {
+            ii = new ImageIcon(scaleImage(652, 600, bi));
+        } catch (Exception ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_DarkenActionPerformed
 
@@ -663,7 +713,11 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         }
         bi = brightness;
-        ii = new ImageIcon(bi);
+        try {
+            ii = new ImageIcon(scaleImage(652, 600, bi));
+        } catch (Exception ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_BrightnessActionPerformed
 
@@ -699,14 +753,22 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         }
         bi = sharpen;
-        ii = new ImageIcon(bi);
+        try {
+            ii = new ImageIcon(scaleImage(652, 600, bi));
+        } catch (Exception ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_sharpenActionPerformed
 
     private void saveHueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveHueActionPerformed
         // TODO add your handling code here:
         bi = currentImg;
-        ii = new ImageIcon(bi);
+        try {
+            ii = new ImageIcon(scaleImage(652, 600, bi));
+        } catch (Exception ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         ImagePanel.setIcon(ii);
         hueSelectFrame.dispose();
     }//GEN-LAST:event_saveHueActionPerformed
@@ -714,7 +776,11 @@ public class NewJFrame extends javax.swing.JFrame {
     private void hueSelectFrameWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_hueSelectFrameWindowClosing
         // TODO add your handling code here:                                               
         // TODO add your handling code here:
-        ii = new ImageIcon(bi);
+        try {
+            ii = new ImageIcon(scaleImage(652, 600, bi));
+        } catch (Exception ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_hueSelectFrameWindowClosing
 
@@ -732,7 +798,11 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         }
         bi = vert;
-        ii = new ImageIcon(bi);
+        try {
+            ii = new ImageIcon(scaleImage(652, 600, bi));
+        } catch (Exception ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_vertFlipActionPerformed
 
@@ -745,7 +815,7 @@ public class NewJFrame extends javax.swing.JFrame {
         File output = new File(fileChooser.getSelectedFile().toString());
         
         try{
-            ImageIO.write(scaleImage(originalWidth, originalHeight, bi), "png", output);
+            ImageIO.write(bi, "png", output);
         }
         catch(IOException e) {
             System.out.println(e.getMessage());
@@ -768,9 +838,22 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         }
         bi = hori;
-        ii = new ImageIcon(bi);
+        try {
+            ii = new ImageIcon(scaleImage(652, 600, bi));
+        } catch (Exception ex) {
+            Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
         ImagePanel.setIcon(ii);
     }//GEN-LAST:event_flipHoriActionPerformed
+
+    private void generateHistogramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generateHistogramActionPerformed
+        
+        histopanel.removeAll();
+        HistogramPanel histogramPanel = new HistogramPanel(bi);
+        histopanel.add(histogramPanel);
+        histogramPanel.setVisible(true);
+        histopanel.setVisible(true);
+    }//GEN-LAST:event_generateHistogramActionPerformed
 
     /*
     public void createFrame(String action)
@@ -793,13 +876,13 @@ public class NewJFrame extends javax.swing.JFrame {
     
     
     public static BufferedImage scaleImage(int w, int h, BufferedImage img) throws Exception {
-        bi = new BufferedImage(w, h, BufferedImage.TRANSLUCENT);
-        Graphics2D g2d = (Graphics2D) bi.createGraphics();
+        previewImg = new BufferedImage(w, h, BufferedImage.TRANSLUCENT);
+        Graphics2D g2d = (Graphics2D) previewImg.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
         g2d.drawImage(img, 0, 0, w, h, null);
         g2d.dispose();
-        return bi;
+        return previewImg;
     }
     
     /**
@@ -837,6 +920,80 @@ public class NewJFrame extends javax.swing.JFrame {
             }
         });
     }
+    
+    class HistogramPanel extends JPanel {
+    private BufferedImage image;
+
+    public HistogramPanel(BufferedImage image) {
+        this.image = image;
+        setSize(680, 580);
+        setVisible(true);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        drawHistogram(g);
+    }
+
+    private void drawHistogram(Graphics g) {
+        int[] redHistogram = new int[256];
+        int[] greenHistogram = new int[256];
+        int[] blueHistogram = new int[256];
+
+        // Calculate histogram values
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                int pixel = image.getRGB(x, y);
+                int red = (pixel >> 16) & 0xFF;
+                int green = (pixel >> 8) & 0xFF;
+                int blue = pixel & 0xFF;
+                redHistogram[red]++;
+                greenHistogram[green]++;
+                blueHistogram[blue]++;
+            }
+        }
+
+        int maxValue = getMaxValue(redHistogram, greenHistogram, blueHistogram);
+
+        int barWidth = getWidth() / redHistogram.length;
+
+        for (int i = 0; i < redHistogram.length; i++) {
+            int redBarHeight = (int) (((double) redHistogram[i] / maxValue) * getHeight());
+            int greenBarHeight = (int) (((double) greenHistogram[i] / maxValue) * getHeight());
+            int blueBarHeight = (int) (((double) blueHistogram[i] / maxValue) * getHeight());
+
+            g.setColor(Color.RED);
+            g.fillRect(i * barWidth, getHeight() - redBarHeight, barWidth, redBarHeight);
+
+            g.setColor(Color.GREEN);
+            g.fillRect(i * barWidth, getHeight() - greenBarHeight, barWidth, greenBarHeight);
+
+            g.setColor(Color.BLUE);
+            g.fillRect(i * barWidth, getHeight() - blueBarHeight, barWidth, blueBarHeight);
+        }
+        // Draw X-axis label
+        g.setColor(Color.BLACK);
+        g.drawString("Pixel Value", getWidth() / 2, getHeight() + 20);
+
+        // Draw Y-axis label
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.rotate(-Math.PI / 2);
+        g2d.drawString("Frequency", -getHeight() / 2, 20);
+    }
+
+    private int getMaxValue(int[]... histograms) {
+        int max = Integer.MIN_VALUE;
+        for (int[] histogram : histograms) {
+            for (int value : histogram) {
+                if (value > max) {
+                    max = value;
+                }
+            }
+        }
+        return max;
+    }
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Brightness;
@@ -853,7 +1010,9 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JFrame colorFilterFrame;
     private javax.swing.JColorChooser colorSelector;
     private javax.swing.JButton flipHori;
+    private javax.swing.JButton generateHistogram;
     private javax.swing.JButton greyScaleBtn;
+    private javax.swing.JPanel histopanel;
     private javax.swing.JFrame hueSelectFrame;
     private javax.swing.JFileChooser jFileChooser1;
     private javax.swing.JLabel jLabel1;
